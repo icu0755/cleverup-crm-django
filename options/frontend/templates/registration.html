@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}
+    registration
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% load bootstrap3 %}
+        <div class="col-xs-6 col-xs-offset-3">
+            <form action="{% url 'frontend:registration' %}" method="post" class="form login" novalidate>
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary">
+                        Sign up
+                    </button>
+                {% endbuttons %}
+            </form>
+        </div>
+    </div>
+{% endblock %}

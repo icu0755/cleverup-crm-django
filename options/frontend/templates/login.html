@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+{% trans 'sign-in' %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="col-xs-6 col-xs-offset-3">
+        {% load bootstrap3 %}
+        <form action="{% url 'frontend:login' %}" method="post" class="form login" novalidate>
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% buttons %}
+            <button type="submit" class="btn btn-primary">
+                Sign-in
+            </button>
+            <a href="{% url 'frontend:registration' %}" class="btn btn-default">Registration</a>
+            {% endbuttons %}
+        </form>
+    </div>
+    
+</div>
+{% endblock %}

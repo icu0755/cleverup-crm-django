@@ -27,6 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_URL = '/login'
+DEFAULT_PASSWORD_LENGTH = 10
+
 
 # Application definition
 
@@ -40,6 +43,7 @@ INSTALLED_APPS = (
     'frontend',
     'bootstrap3',
     'menu',
+    'django_extensions',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -107,3 +111,11 @@ STATIC_ROOT = ''
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/opt/options/'
 
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mandrillapp.com'
+EMAIL_HOST_USER = 'icu0755@gmail.com'
+EMAIL_HOST_PASSWORD = 'jOPak1JC5K0q1MtzQO_vSg'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = False
+EMAIL_FROM = EMAIL_HOST_USER

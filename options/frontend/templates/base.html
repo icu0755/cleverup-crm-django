@@ -7,6 +7,7 @@
     {% load bootstrap3 %}
     <link href="{% static 'vendor/bootstrap/dist/css/bootstrap.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <script src="{% static 'vendor/jquery/dist/jquery.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/dist/js/bootstrap.js' %}"></script>
 </head>
 <body class="{% if not request.user.is_authenticated %}login-page{% endif %}">
@@ -23,7 +24,7 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="/">
-                <img src="/static/images/logo_formtastic.png" alt="Formtastic"/> Formtastic
+                <img src="//placehold.it/33x42" alt="Brand"/> Brand
             </a>
         </div>
         <div class="collapse navbar-collapse">
