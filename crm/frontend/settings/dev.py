@@ -57,7 +57,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
 )
 
-ROOT_URLCONF = 'options.urls'
+ROOT_URLCONF = 'crm.urls'
 
 TEMPLATES = [
     {
@@ -75,7 +75,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'options.wsgi.application'
+WSGI_APPLICATION = 'crm.wsgi.application'
 
 
 # Database
@@ -109,7 +109,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = ''
 MEDIA_URL = '/media/'
-MEDIA_ROOT = '/opt/options/'
+MEDIA_ROOT = '/opt/cleverup-crm/'
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
