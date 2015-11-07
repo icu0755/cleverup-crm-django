@@ -2,3 +2,4 @@ Django==1.8.5
 django-bootstrap3==6.2.2
 django-extensions==1.5.7
 django-simple-menu==1.1.0
+waitress==0.8.10
