@@ -4,14 +4,22 @@
   tasks:
     - name: supervisorctl stop
       supervisorctl: name=cleverup-crm-frontend state=stopped
+- hosts: all
+  sudo: no
+  tasks:
     - name: checkout project
-      git: repo= git@bitbucket.org:icu0755/cleverup-crm-django.git dest=:/opt/cleverup clone=yes update=yes version=master force=yes
+      git: repo= git@bitbucket.org:icu0755/cleverup-crm-django.git dest=:/opt/cleverup update=yes version=master force=yes
     - name: collect static
       django_manage:
         command: collectstatic
         app_path: /opt/cleverup/crm
         settings: frontend.settings.prod
         virtualenv: /opt/cleverup/env
+- hosts: all
+  sudo: yes
+  tasks:
+    - name: supervisorctl stop
+      supervisorctl: name=cleverup-crm-frontend state=stopped
     - name: supervisorctl reread
       shell: supervisorctl reread
     - name: supervisorctl update
