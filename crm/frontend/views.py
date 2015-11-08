@@ -203,13 +203,14 @@ def groups_attendance(request, group_id):
         messages.error(request, _('Group %s does not exists') % group_id)
         return redirect('frontend:groups-list')
 
+    initial = {'attendance_time': timezone.now()}
     if request.method == 'POST':
-        form = GroupAttendanceSelectForm(request.POST)
+        form = GroupAttendanceSelectForm(request.POST, initial=initial)
         if form.is_valid():
             dt = form.cleaned_data['attendance_time']
             return redirect(reverse('frontend:groups-attendance-edit', kwargs={'group_id': instance.id, 'dt': dt}))
     else:
-        form = GroupAttendanceSelectForm()
+        form = GroupAttendanceSelectForm(initial=initial)
     attendance = GroupAttendance.objects.filter(group=instance).values('attendance_time').order_by('attendance_time')\
         .distinct('attendance_time')
     context = {'form': form, 'attendance': attendance, 'group': instance}

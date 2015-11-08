@@ -10,7 +10,7 @@
     - name: checkout project
       git: repo=git@bitbucket.org:icu0755/cleverup-crm-django.git dest=/opt/cleverup update=yes version=master force=yes
     - name: bower install
-      bower: path=/opt/cleverup
+      shell: bower install chdir=/opt/cleverup
     - name: collect static
       django_manage:
         command: collectstatic

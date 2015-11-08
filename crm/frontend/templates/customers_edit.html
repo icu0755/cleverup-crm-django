@@ -8,15 +8,20 @@
 {% block content %}
     <div class="container">
         <h1>{% trans 'Customer edit' %} {{ customer.firstname }} {{ customer.lastname }} </h1>
-        {% load bootstrap3 %}
-        <form action="{% url 'frontend:customers-edit' customer.id %}" method="post" class="form" novalidate>
-            {% csrf_token %}
-            {% bootstrap_form form %}
-            {% buttons %}
-                <button type="submit" class="btn btn-primary">
-                    {% trans 'Update' %}
-                </button>
-            {% endbuttons %}
-        </form>
+        <div class="row">
+            <div class="col-xs-12 col-md-6">
+
+            {% load bootstrap3 %}
+            <form action="{% url 'frontend:customers-edit' customer.id %}" method="post" class="form" novalidate>
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary">
+                        {% trans 'Update' %}
+                    </button>
+                {% endbuttons %}
+            </form>
+            </div>
+        </div>
     </div>
 {% endblock %}

@@ -83,5 +83,6 @@ class GroupAttendanceForm(forms.Form):
 
 
 class GroupAttendanceSelectForm(forms.Form):
-    attendance_time = forms.DateField(label=_('Date'))
+    attendance_time = forms.DateField(label=_('Date'), widget=forms.DateInput(attrs={'class': 'cu-datepicker'}))
+
 

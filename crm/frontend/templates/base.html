@@ -6,9 +6,12 @@
     {% load staticfiles %}
     {% load bootstrap3 %}
     <link href="{% static 'vendor/bootstrap/dist/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
     <script src="{% static 'vendor/jquery/dist/jquery.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/dist/js/bootstrap.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
 </head>
 <body class="{% if not request.user.is_authenticated %}login-page{% endif %}">
 {% load i18n %}
