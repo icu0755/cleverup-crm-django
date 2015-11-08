@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans 'Attendance' %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>{% trans 'Attendace edit' %} {{ group.name }} {{ dt }}</h1>
+        {% load bootstrap3 %}
+        <form action="{% url 'frontend:groups-attendance-edit' group.id dt %}" method="post" class="form" novalidate>
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% buttons %}
+                <button type="submit" class="btn btn-primary">
+                    {% trans 'Update' %}
+                </button>
+            {% endbuttons %}
+        </form>
+    </div>
+{% endblock %}

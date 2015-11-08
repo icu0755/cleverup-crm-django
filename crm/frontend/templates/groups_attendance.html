@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans 'Group attendance' %} {{ group.name }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>{% trans 'Group attendance' %} {{ group.name }}</h1>
+        {% load bootstrap3 %}
+        <form action="{% url 'frontend:groups-attendance' group.id %}" method="post" class="form" novalidate>
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% buttons %}
+                <button type="submit" class="btn btn-primary">
+                    {% trans 'Add' %}
+                </button>
+            {% endbuttons %}
+        </form>
+        {% if attendance %}
+            <table class="table table-with-actions">
+                {% for instance in attendance %}
+                    <tr>
+                        <td>{{ instance.attendance_time }} </td>
+                        <td class="list-actions">
+                            <a
+                                    href="{% url 'frontend:groups-attendance-edit' group.id instance.attendance_time %}"
+                                    class="btn btn-primary">
+                                <span class="glyphicon glyphicon-edit"></span></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>{% trans 'Nothing yet here' %}</p>
+        {% endif %}
+
+    </div>
+{% endblock %}

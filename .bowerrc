@@ -1,4 +1,4 @@
 {
-  "directory": "options/frontend/static/vendor/",
+  "directory": "crm/frontend/static/vendor/",
   "analytics": true
 }

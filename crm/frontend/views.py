@@ -6,9 +6,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
+from django.db import transaction
 from django.shortcuts import render, redirect
+from django.utils import timezone
 from django.utils.translation import gettext as _
-from frontend.forms import LoginForm, RegForm
+from frontend.forms import LoginForm, RegForm, CustomerGroupForm, CustomerForm, GroupAttendanceSelectForm, \
+    GroupAttendanceForm
+from frontend.models import CustomerGroup, Customer, GroupAttendance
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -120,3 +124,123 @@ def registration(request):
         'form': form
     }
     return render(request, 'registration.html', context)
+
+
+@login_required(login_url=settings.LOGIN_URL)
+def customers_list(request):
+    if request.method == 'POST':
+        form = CustomerForm(request.POST)
+        if form.is_valid():
+            instance = form.save()
+            messages.success(request, _('Customer %s %s created') % (instance.firstname, instance.lastname))
+            return redirect(reverse('frontend:customers-list'))
+    else:
+        form = CustomerForm()
+    customers = Customer.objects.all()
+    context = {'form': form, 'customers': customers}
+    return render(request, 'customers_list.html', context)
+
+
+@login_required(login_url=settings.LOGIN_URL)
+def customers_edit(request, customer_id):
+    try:
+        instance = Customer.objects.get(pk=customer_id)
+    except Customer.DoesNotExist:
+        messages.error(request, _('Customer %s does not exists') % customer_id)
+        return redirect('frontend:customers-list')
+
+    if request.method == 'POST':
+        form = CustomerForm(data=request.POST, instance=instance)
+        if form.is_valid():
+            instance = form.save()
+            messages.success(request, _('Customer saved'))
+            return redirect('frontend:customers-list')
+    else:
+        form = CustomerForm(instance=instance)
+
+    return render(request, 'customers_edit.html', {'form': form, 'customer': instance})
+
+
+@login_required(login_url=settings.LOGIN_URL)
+def groups_list(request):
+    if request.method == 'POST':
+        form = CustomerGroupForm(request.POST)
+        if form.is_valid():
+            instance = form.save()
+            messages.success(request, _('Group %s created') % instance.name)
+            return redirect(reverse('frontend:groups-list'))
+    else:
+        form = CustomerGroupForm()
+    groups = CustomerGroup.objects.all()
+    context = {'form': form, 'groups': groups}
+    return render(request, 'groups_list.html', context)
+
+
+@login_required(login_url=settings.LOGIN_URL)
+def groups_edit(request, group_id):
+    try:
+        instance = CustomerGroup.objects.get(pk=group_id)
+    except CustomerGroup.DoesNotExist:
+        messages.error(request, _('Group %s does not exists') % group_id)
+        return redirect('frontend:groups-list')
+
+    if request.method == 'POST':
+        form = CustomerGroupForm(data=request.POST, instance=instance)
+        if form.is_valid():
+            instance = form.save()
+            messages.success(request, _('Group saved'))
+            return redirect('frontend:groups-list')
+    else:
+        form = CustomerGroupForm(instance=instance)
+
+    return render(request, 'groups_edit.html', {'form': form, 'group': instance})
+
+
+def groups_attendance(request, group_id):
+    try:
+        instance = CustomerGroup.objects.get(pk=group_id)
+    except CustomerGroup.DoesNotExist:
+        messages.error(request, _('Group %s does not exists') % group_id)
+        return redirect('frontend:groups-list')
+
+    if request.method == 'POST':
+        form = GroupAttendanceSelectForm(request.POST)
+        if form.is_valid():
+            dt = form.cleaned_data['attendance_time']
+            return redirect(reverse('frontend:groups-attendance-edit', kwargs={'group_id': instance.id, 'dt': dt}))
+    else:
+        form = GroupAttendanceSelectForm()
+    attendance = GroupAttendance.objects.filter(group=instance).values('attendance_time').order_by('attendance_time')\
+        .distinct('attendance_time')
+    context = {'form': form, 'attendance': attendance, 'group': instance}
+    return render(request, 'groups_attendance.html', context)
+
+
+@transaction.atomic
+def groups_attendance_edit(request, group_id, dt):
+    try:
+        instance = CustomerGroup.objects.get(pk=group_id)
+    except CustomerGroup.DoesNotExist:
+        messages.error(request, _('Group %s does not exists') % group_id)
+        return redirect('frontend:groups-list')
+
+    dt = timezone.datetime.strptime(dt, '%Y-%m-%d')
+    initial = instance.get_attendance(dt)
+    if request.method == 'POST':
+        form = GroupAttendanceForm(request.POST, group=instance, initial=initial)
+        if form.is_valid():
+            for customer_field, value in form.cleaned_data.iteritems():
+                none, customer_id = customer_field.split('_')
+                customer_id = int(customer_id)
+                customer = Customer.objects.get(id=customer_id)
+                if value and not initial[customer_field]:
+                    GroupAttendance.objects.create(group=instance, customer=customer, attendance_time=dt)
+                if not value and initial[customer_field]:
+                    GroupAttendance.objects.filter(group=instance, customer=customer, attendance_time=dt).delete()
+
+            messages.success(request, _('Attendance saved'))
+            return redirect(reverse('frontend:groups-attendance', kwargs={'group_id': instance.id}))
+    else:
+        form = GroupAttendanceForm(group=instance, initial=initial)
+    context = {'form': form, 'group': instance, 'dt': dt.strftime('%Y-%m-%d')}
+    return render(request, 'groups_attendance_edit.html', context)

@@ -1,5 +1,8 @@
 from django import forms
 from django.core import validators
+from django.forms.utils import ErrorList
+from django.utils.translation import ugettext as _
+from frontend import models
 
 __author__ = 'vi'
 
@@ -51,4 +54,34 @@ class RegForm(forms.Form):
     )
 
 
+class CustomerGroupForm(forms.ModelForm):
+    class Meta:
+        model = models.CustomerGroup
+        fields = ['name']
+
+
+class CustomerForm(forms.ModelForm):
+    class Meta:
+        model = models.Customer
+        fields = ['firstname', 'lastname', 'group']
+
+
+class GroupAttendanceForm(forms.Form):
+    def __init__(self, data=None, files=None, auto_id='id_%s', prefix=None,
+                 initial=None, error_class=ErrorList, label_suffix=None,
+                 empty_permitted=False, group=None):
+        super(GroupAttendanceForm, self).__init__(data, files, auto_id, prefix, initial,
+                                                  error_class, label_suffix, empty_permitted)
+        self.group = group
+        self.add_customers()
+
+    def add_customers(self):
+        for customer in self.group.customers.all():
+            field_name = 'customer_%s' % customer.id
+            field = forms.BooleanField(label='%s %s' % (customer.firstname, customer.lastname), required=False)
+            self.fields[field_name] = field
+
+
+class GroupAttendanceSelectForm(forms.Form):
+    attendance_time = forms.DateField(label=_('Date'))
 

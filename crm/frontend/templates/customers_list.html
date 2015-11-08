@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans 'Customers' %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>{% trans 'Customers' %}</h1>
+        {% if customers %}
+            <table class="table table-with-actions">
+                {% for customer in customers %}
+                    <tr>
+                        <td>{{ customer.firstname }} </td>
+                        <td>{{ customer.lastname }} </td>
+                        <td class="list-actions">
+                            <a href="{% url 'frontend:customers-edit' customer.id %}" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-edit"></span></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>{% trans 'No customers found' %}</p>
+        {% endif %}
+
+        <h2>{% trans 'Create new customer' %}</h2>
+        {% load bootstrap3 %}
+        <form action="{% url 'frontend:customers-list' %}" method="post" class="form" novalidate>
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% buttons %}
+                <button type="submit" class="btn btn-primary">
+                    {% trans 'Add' %}
+                </button>
+            {% endbuttons %}
+        </form>
+    </div>
+{% endblock %}

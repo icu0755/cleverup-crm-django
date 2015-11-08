@@ -1,5 +1,5 @@
 {
-  "name": "options",
+  "name": "crm",
   "version": "0.0.0",
   "authors": [
     "Vladimir Ivanov <icu0755@gmail.com>"
@@ -14,7 +14,7 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "options/frontend/static/vendor/",
+    "crm/frontend/static/vendor/",
     "test",
     "tests"
   ],
