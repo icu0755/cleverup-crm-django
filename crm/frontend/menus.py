@@ -31,3 +31,7 @@ Menu.add_item("main", MenuItem("Groups",
                                reverse("frontend:groups-list"),
                                weight=20,
                                check=is_authenticated()))
+Menu.add_item("main", MenuItem("Users",
+                               reverse("frontend:users-list"),
+                               weight=30,
+                               check=is_superuser()))

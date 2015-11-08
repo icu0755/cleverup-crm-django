@@ -75,6 +75,11 @@ TEMPLATES = [
     },
 ]
 
+BOOTSTRAP3 = {
+    'include_jquery': True,
+    'success_css_class': '',  # annoying green fields in update forms
+}
+
 WSGI_APPLICATION = 'crm.wsgi.application'
 
 

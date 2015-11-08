@@ -1,8 +1,10 @@
 from django import forms
 from django.core import validators
+from django.core.validators import validate_email
 from django.forms.utils import ErrorList
 from django.utils.translation import ugettext as _
 from frontend import models
+from frontend.validators import validate_user_not_exists
 
 __author__ = 'vi'
 
@@ -84,5 +86,47 @@ class GroupAttendanceForm(forms.Form):
 
 class GroupAttendanceSelectForm(forms.Form):
     attendance_time = forms.DateField(label=_('Date'), widget=forms.DateInput(attrs={'class': 'cu-datepicker'}))
+
+
+class UserCreateForm(forms.Form):
+    email = TrimmedCharFormField(
+        label=_('Email'),
+        widget=forms.EmailInput,
+        required=True,
+        validators=[validate_email, validate_user_not_exists],
+    )
+    password = forms.CharField(
+        label=_('Password'),
+        widget=forms.PasswordInput,
+        required=True,
+    )
+
+
+class UserEditForm(forms.Form):
+    email = TrimmedCharFormField(
+        label=_('Email'),
+        widget=forms.EmailInput,
+        required=True,
+        validators=[validate_email],
+    )
+    password = forms.CharField(
+        label=_('Password'),
+        widget=forms.PasswordInput,
+        required=False,
+    )
+
+    def __init__(self, data=None, files=None, auto_id='id_%s', prefix=None,
+                 initial=None, error_class=ErrorList, label_suffix=None,
+                 empty_permitted=False, group=None):
+        super(UserEditForm, self).__init__(data, files, auto_id, prefix, initial,
+                                                  error_class, label_suffix, empty_permitted)
+        self.init_fields()
+
+    def init_fields(self):
+        self.init_email_validators()
+
+    def init_email_validators(self):
+        if 'email' in self.changed_data:
+            self.fields['email'].validators.append(validate_user_not_exists)
 
 

@@ -11,7 +11,7 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from frontend.forms import LoginForm, RegForm, CustomerGroupForm, CustomerForm, GroupAttendanceSelectForm, \
-    GroupAttendanceForm
+    GroupAttendanceForm, UserCreateForm, UserEditForm
 from frontend.models import CustomerGroup, Customer, GroupAttendance
 
 
@@ -245,3 +245,61 @@ def groups_attendance_edit(request, group_id, dt):
         form = GroupAttendanceForm(group=instance, initial=initial)
     context = {'form': form, 'group': instance, 'dt': dt.strftime('%Y-%m-%d')}
     return render(request, 'groups_attendance_edit.html', context)
+
+
+@login_required(login_url=settings.LOGIN_URL)
+def users_list(request):
+    if request.method == 'POST':
+        form = UserCreateForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            instance = User.objects.create_user(email, email, password)
+            instance.is_staff = True
+            instance.save()
+            messages.success(request, _('User %s created') % instance.username)
+            return redirect(reverse('frontend:users-list'))
+    else:
+        form = UserCreateForm()
+    users = User.objects.filter(is_superuser=False, is_active=True)
+    context = {'users': users, 'form': form}
+    return render(request, 'users_list.html', context)
+
+
+@login_required(login_url=settings.LOGIN_URL)
+def users_edit(request, user_id):
+    try:
+        instance = User.objects.filter(is_superuser=False, is_active=True).get(id=user_id)
+    except User.DoesNotExist:
+        messages.error(request, _('User %s does not exists') % user_id)
+        return redirect('frontend:users-list')
+
+    initial = {
+        'email': instance.email,
+    }
+    if request.method == 'POST':
+        form = UserEditForm(request.POST, initial=initial)
+        if form.is_valid():
+            instance.email = instance.username = form.cleaned_data['email']
+            if 'password' in form.changed_data:
+                password = form.cleaned_data['password']
+                instance.set_password(password)
+            instance.save()
+            messages.success(request, _('User saved'))
+            return redirect('frontend:users-list')
+    else:
+        form = UserEditForm(initial=initial)
+
+    return render(request, 'users_edit.html', {'form': form, 'user': instance})
+
+
+@login_required(login_url=settings.LOGIN_URL)
+def users_remove(request, user_id):
+    try:
+        instance = User.objects.get(pk=user_id)
+        instance.is_active = False
+        instance.save()
+    except User.DoesNotExist:
+        messages.error(request, _('User %s does not exists') % user_id)
+    messages.success(request, _('User %s removed') % user_id)
+    return redirect('frontend:users-list')
