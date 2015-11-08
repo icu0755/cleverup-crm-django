@@ -5,7 +5,7 @@
     - name: supervisorctl stop
       supervisorctl: name=cleverup-crm-frontend state=stopped
     - name: checkout project
-      git: repo= git@bitbucket.org:icu0755/cleverup-crm-django.git dest=:/opt/cleverup clone=yes update=yes version=master force=yes
+      git: repo=git@bitbucket.org:icu0755/cleverup-crm-django.git dest=/opt/cleverup clone=yes update=yes version=master force=yes
     - name: collect static
       django_manage:
         command: collectstatic
