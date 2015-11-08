@@ -1,5 +1,7 @@
+from collections import OrderedDict
 import random
 import string
+from datetime import timedelta
 from django.conf import settings
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
@@ -235,6 +237,31 @@ def groups_attendance(request, group_id):
         .distinct('attendance_time')
     context = {'form': form, 'attendance': attendance, 'group': instance}
     return render(request, 'groups_attendance.html', context)
+
+
+def groups_attendance_report(request, group_id):
+    try:
+        instance = CustomerGroup.objects.get(pk=group_id)
+    except CustomerGroup.DoesNotExist:
+        messages.error(request, _('Group %s does not exists') % group_id)
+        return redirect('frontend:groups-list')
+
+    now = timezone.now()
+    startdate = now - timedelta(days=45)
+    dates = GroupAttendance.objects.filter(group=instance, attendance_time__gte=startdate)\
+        .values('attendance_time')\
+        .order_by('attendance_time')\
+        .distinct('attendance_time')
+
+    attendance = OrderedDict()
+    attendance_dates = []
+    customers = instance.customers.all().order_by('firstname', 'lastname')
+    for date in dates:
+        dt = date['attendance_time']
+        attendance_dates.append(dt.strftime('%d.%m.%Y'))
+        attendance[dt.strftime('%d.%m.%Y')] = instance.get_attendance(dt)
+    context = {'attendance': attendance, 'dates': attendance_dates, 'group': instance, 'customers': customers}
+    return render(request, 'groups_attendance_report.html', context)
 
 
 @transaction.atomic

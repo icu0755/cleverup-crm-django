@@ -1,13 +1,15 @@
+from collections import OrderedDict
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils import timezone
 
 
 class CustomerGroup(models.Model):
     name = models.CharField(max_length=255)
 
     def get_attendance(self, dt):
-        attendance = {'customer_%s' % customer.id: False for customer in self.customers.all()}
+        attendance = OrderedDict()
+        for customer in self.customers.all().order_by('firstname'):
+            attendance['customer_%s' % customer.id] = False
         for instance in self.attendance.filter(attendance_time=dt):
             attendance['customer_%s' % instance.customer.id] = True
         return attendance

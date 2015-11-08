@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans 'Customers' %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>{% trans 'Customer add to group' %} {{ group.name }}</h1>
+        {% load view_filters %}
+        <table class="table">
+            {% if dates %}
+            <tr>
+                <th></th>
+                {% for date in dates %}
+                    <th class="text-center">{{ date }}</th>
+                {% endfor %}
+            </tr>
+            {% for customer in customers %}
+            <tr>
+                <td>{{ customer.firstname }} {{ customer.lastname }}</td>
+                {% for date in dates %}
+                    <td class="text-center">{{ attendance|get_item:date|get_customer_item:customer|presence }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+            <td>{% trans 'No data' %}</td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
+{% endblock %}

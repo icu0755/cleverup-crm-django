@@ -26,6 +26,11 @@
                                     </a>
                                     <a href="{% url 'frontend:groups-attendance' group.id %}" class="btn btn-default">
                                         <span class="glyphicon glyphicon-th-list"></span></a>
+                                    <a
+                                            href="{% url 'frontend:groups-attendance-report' group.id %}"
+                                            class="btn btn-default">
+                                        <span class="glyphicon glyphicon-eye-open"></span>
+                                    </a>
                                 </td>
                             </tr>
                         {% endfor %}
