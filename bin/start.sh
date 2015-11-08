@@ -23,5 +23,5 @@ test -d $RUNDIR || mkdir -p $RUNDIR
 
 # Start your Django Unicorn
 # Programs meant to be run under supervisor should not daemonize themselves (do not use --daemon)
-exec ../env/bin/waitress-serve --unix-socket=$SOCKFILE ${DJANGO_WSGI_MODULE}.wsgi:application
+exec ../env/bin/waitress-serve --host=127.0.0.1 --port=8000 ${DJANGO_WSGI_MODULE}.wsgi:application
 
