@@ -177,6 +177,26 @@ def groups_list(request):
 
 
 @login_required(login_url=settings.LOGIN_URL)
+def groups_customer_add(request, group_id):
+    try:
+        group = CustomerGroup.objects.get(pk=group_id)
+    except CustomerGroup.DoesNotExist:
+        messages.error(request, _('Group %s does not exists') % group_id)
+        return redirect('frontend:groups-list')
+
+    if request.method == 'POST':
+        form = CustomerForm(data=request.POST, group=group)
+        if form.is_valid():
+            instance = form.save()
+            messages.success(request, _('Customer %s %s created') % (instance.firstname, instance.lastname))
+            return redirect('frontend:customers-list')
+    else:
+        form = CustomerForm(group=group)
+
+    return render(request, 'groups_customer_add.html', {'form': form, 'group': group})
+
+
+@login_required(login_url=settings.LOGIN_URL)
 def groups_edit(request, group_id):
     try:
         instance = CustomerGroup.objects.get(pk=group_id)

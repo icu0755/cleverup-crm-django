@@ -16,6 +16,7 @@
                     <tr>
                         <td>{{ customer.firstname }} </td>
                         <td>{{ customer.lastname }} </td>
+                        <td>{{ customer.group }} </td>
                         <td class="list-actions">
                             <a href="{% url 'frontend:customers-edit' customer.id %}" class="btn btn-primary">
                                 <span class="glyphicon glyphicon-edit"></span></a>

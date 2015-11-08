@@ -12,6 +12,8 @@ urlpatterns = [
                   url(r'^customers/(?P<customer_id>\d+)/edit$', views.customers_edit, name='customers-edit'),
                   url(r'^groups$', views.groups_list, name='groups-list'),
                   url(r'^groups/(?P<group_id>\d+)/edit$', views.groups_edit, name='groups-edit'),
+                  url(r'^groups/(?P<group_id>\d+)/customer_add$', views.groups_customer_add,
+                      name='groups-customer-add'),
                   url(r'^groups/(?P<group_id>\d+)/attendance$', views.groups_attendance, name='groups-attendance'),
                   url(r'^groups/(?P<group_id>\d+)/attendance/(?P<dt>\d{4}\-\d{2}\-\d{2})$',
                       views.groups_attendance_edit, name='groups-attendance-edit'),

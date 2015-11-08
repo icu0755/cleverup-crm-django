@@ -19,6 +19,11 @@
                                 <td class="list-actions">
                                     <a href="{% url 'frontend:groups-edit' group.id %}" class="btn btn-primary">
                                         <span class="glyphicon glyphicon-edit"></span></a>
+                                    <a
+                                            href="{% url 'frontend:groups-customer-add' group.id %}"
+                                            class="btn btn-default">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </a>
                                     <a href="{% url 'frontend:groups-attendance' group.id %}" class="btn btn-default">
                                         <span class="glyphicon glyphicon-th-list"></span></a>
                                 </td>

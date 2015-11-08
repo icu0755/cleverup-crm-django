@@ -63,6 +63,23 @@ class CustomerGroupForm(forms.ModelForm):
 
 
 class CustomerForm(forms.ModelForm):
+    def __init__(self, data=None, files=None, auto_id='id_%s', prefix=None, initial=None, error_class=ErrorList,
+                 label_suffix=None, empty_permitted=False, instance=None, group=None):
+
+        super(CustomerForm, self).__init__(data, files, auto_id, prefix, initial, error_class, label_suffix,
+                                           empty_permitted, instance)
+        self.group = group
+        self.init_group_field()
+
+    def init_group_field(self):
+        if self.group:
+           del self.fields['group']
+
+    def save(self, commit=True):
+        if self.group:
+            self.instance.group = self.group
+        return super(CustomerForm, self).save(commit)
+
     class Meta:
         model = models.Customer
         fields = ['firstname', 'lastname', 'group']
