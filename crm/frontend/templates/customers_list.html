@@ -20,6 +20,8 @@
                         <td class="list-actions">
                             <a href="{% url 'frontend:customers-edit' customer.id %}" class="btn btn-primary">
                                 <span class="glyphicon glyphicon-edit"></span></a>
+                            <a href="{% url 'frontend:customers-remove' customer.id %}" class="btn btn-danger">
+                                <span class="glyphicon glyphicon-remove"></span></a>
                         </td>
                     </tr>
                 {% endfor %}

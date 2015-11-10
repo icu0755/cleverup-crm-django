@@ -138,7 +138,7 @@ def customers_list(request):
             return redirect(reverse('frontend:customers-list'))
     else:
         form = CustomerForm()
-    customers = Customer.objects.all()
+    customers = Customer.objects.filter(is_active=True).order_by('group', 'firstname', 'lastname')
     context = {'form': form, 'customers': customers}
     return render(request, 'customers_list.html', context)
 
@@ -146,7 +146,7 @@ def customers_list(request):
 @login_required(login_url=settings.LOGIN_URL)
 def customers_edit(request, customer_id):
     try:
-        instance = Customer.objects.get(pk=customer_id)
+        instance = Customer.objects.filter(is_active=True).get(pk=customer_id)
     except Customer.DoesNotExist:
         messages.error(request, _('Customer %s does not exists') % customer_id)
         return redirect('frontend:customers-list')
@@ -164,6 +164,20 @@ def customers_edit(request, customer_id):
 
 
 @login_required(login_url=settings.LOGIN_URL)
+def customers_remove(request, customer_id):
+    try:
+        instance = Customer.objects.get(pk=customer_id)
+        instance.is_active = False
+        instance.save()
+    except Customer.DoesNotExist:
+        messages.error(request, _('Customer %s does not exists') % customer_id)
+        return redirect('frontend:customers-list')
+
+    messages.success(request, _('Customer deleted'))
+    return redirect('frontend:customers-list')
+
+
+@login_required(login_url=settings.LOGIN_URL)
 def groups_list(request):
     if request.method == 'POST':
         form = CustomerGroupForm(request.POST)
@@ -173,7 +187,7 @@ def groups_list(request):
             return redirect(reverse('frontend:groups-list'))
     else:
         form = CustomerGroupForm()
-    groups = CustomerGroup.objects.all()
+    groups = CustomerGroup.objects.filter(is_active=True).order_by('name')
     context = {'form': form, 'groups': groups}
     return render(request, 'groups_list.html', context)
 
@@ -181,7 +195,7 @@ def groups_list(request):
 @login_required(login_url=settings.LOGIN_URL)
 def groups_customer_add(request, group_id):
     try:
-        group = CustomerGroup.objects.get(pk=group_id)
+        group = CustomerGroup.objects.filter(is_active=True).get(pk=group_id)
     except CustomerGroup.DoesNotExist:
         messages.error(request, _('Group %s does not exists') % group_id)
         return redirect('frontend:groups-list')
@@ -201,7 +215,7 @@ def groups_customer_add(request, group_id):
 @login_required(login_url=settings.LOGIN_URL)
 def groups_edit(request, group_id):
     try:
-        instance = CustomerGroup.objects.get(pk=group_id)
+        instance = CustomerGroup.objects.filter(is_active=True).get(pk=group_id)
     except CustomerGroup.DoesNotExist:
         messages.error(request, _('Group %s does not exists') % group_id)
         return redirect('frontend:groups-list')
@@ -218,9 +232,23 @@ def groups_edit(request, group_id):
     return render(request, 'groups_edit.html', {'form': form, 'group': instance})
 
 
-def groups_attendance(request, group_id):
+@login_required(login_url=settings.LOGIN_URL)
+def groups_remove(request, group_id):
     try:
         instance = CustomerGroup.objects.get(pk=group_id)
+        instance.is_active = False
+        instance.save()
+    except CustomerGroup.DoesNotExist:
+        messages.error(request, _('Group %s does not exists') % group_id)
+        return redirect('frontend:groups-list')
+
+    messages.success(request, _('Group removed'))
+    return redirect('frontend:groups-list')
+
+
+def groups_attendance(request, group_id):
+    try:
+        instance = CustomerGroup.objects.filter(is_active=True).get(pk=group_id)
     except CustomerGroup.DoesNotExist:
         messages.error(request, _('Group %s does not exists') % group_id)
         return redirect('frontend:groups-list')
@@ -241,7 +269,7 @@ def groups_attendance(request, group_id):
 
 def groups_attendance_report(request, group_id):
     try:
-        instance = CustomerGroup.objects.get(pk=group_id)
+        instance = CustomerGroup.objects.filter(is_active=True).get(pk=group_id)
     except CustomerGroup.DoesNotExist:
         messages.error(request, _('Group %s does not exists') % group_id)
         return redirect('frontend:groups-list')
@@ -267,7 +295,7 @@ def groups_attendance_report(request, group_id):
 @transaction.atomic
 def groups_attendance_edit(request, group_id, dt):
     try:
-        instance = CustomerGroup.objects.get(pk=group_id)
+        instance = CustomerGroup.objects.filter(is_active=True).get(pk=group_id)
     except CustomerGroup.DoesNotExist:
         messages.error(request, _('Group %s does not exists') % group_id)
         return redirect('frontend:groups-list')
