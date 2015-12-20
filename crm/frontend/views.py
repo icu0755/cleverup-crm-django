@@ -10,6 +10,7 @@ from django.core.mail import send_mail
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.db import transaction
+from django.db.models import Count
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -192,7 +193,7 @@ def groups_list(request):
             return redirect(reverse('frontend:groups-list'))
     else:
         form = CustomerGroupForm()
-    groups = CustomerGroup.objects.filter(is_active=True).order_by('name')
+    groups = CustomerGroup.objects.filter(is_active=True).annotate(members=Count('customers')).order_by('name')
     context = {'form': form, 'groups': groups}
     return render(request, 'groups_list.html', context)
 
@@ -407,3 +408,15 @@ def payments_list(request):
         payment_form = PaymentForm()
     context = {'payments': payments, 'payment_form': payment_form}
     return render(request, 'payments_list.html', context)
+
+
+@login_required(login_url=settings.LOGIN_URL)
+def group_members(request, group_id):
+    try:
+        group = CustomerGroup.objects.get(id=group_id)
+    except CustomerGroup.DoesNotExist:
+        messages.error(request, _('Group does not exist'))
+        return redirect('frontend:home')
+
+    context = {'customers': group.customers.all().order_by('firstname', 'lastname')}
+    return render(request, 'group_members.html', context)

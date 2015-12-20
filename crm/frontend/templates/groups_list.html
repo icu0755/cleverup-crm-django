@@ -13,9 +13,17 @@
             <div class="col-xs-12 col-md-6">
                 {% if groups %}
                     <table class="table table-with-actions">
+                        <tr>
+                            <th>{% trans 'Group' %}</th>
+                            <th class="column-number">{% trans 'Members' %}</th>
+                            <th></th>
+                        </tr>
                         {% for group in groups %}
                             <tr>
-                                <td>{{ group.name }} </td>
+                                <td>{{ group.name }}</td>
+                                <td class="column-number">
+                                    <a href="{% url 'frontend:group-members' group.id %}">{{ group.members }}</a>
+                                </td>
                                 <td class="list-actions">
                                     <a href="{% url 'frontend:groups-edit' group.id %}" class="btn btn-primary">
                                         <span class="glyphicon glyphicon-edit"></span></a>

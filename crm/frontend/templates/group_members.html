@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans 'Group members' %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="col-md-6">
+            <table class="table">
+                <tr>
+                    <th>{% trans 'Member' %}</th>
+                </tr>
+                {% for customer in customers %}
+                    <tr>
+                        <td>{{ customer.firstname }} {{ customer.lastname }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}
