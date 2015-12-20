@@ -35,3 +35,7 @@ Menu.add_item("main", MenuItem("Users",
                                reverse("frontend:users-list"),
                                weight=30,
                                check=is_superuser()))
+Menu.add_item("main", MenuItem("Payments",
+                               reverse("frontend:payments-list"),
+                               weight=40,
+                               check=is_superuser()))
