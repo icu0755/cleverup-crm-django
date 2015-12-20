@@ -19,7 +19,10 @@ from frontend.models import CustomerGroup, Customer, GroupAttendance
 
 @login_required(login_url=settings.LOGIN_URL)
 def home(request):
-    return render(request, 'home.html')
+    context = {
+        'groups': CustomerGroup.objects.all().order_by('-id')[0:5]
+    }
+    return render(request, 'home.html', context)
 
 
 def login(request):
