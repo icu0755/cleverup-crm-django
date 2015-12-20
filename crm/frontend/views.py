@@ -391,6 +391,13 @@ def payments_list(request):
     payments_list = Payment.objects.all().order_by('-paid_at', '-id')
     paginator = Paginator(payments_list, settings.ITEMS_PER_PAGE)
     page = request.GET.get('page')
+    customer_id = request.GET.get('customer_id')
+
+    try:
+        customer = Customer.objects.get(id=customer_id)
+    except Customer.DoesNotExist:
+        customer = None
+
     try:
         payments = paginator.page(page)
     except PageNotAnInteger:
@@ -405,7 +412,7 @@ def payments_list(request):
             payment_form.save()
             return redirect('frontend:payments-list')
     else:
-        payment_form = PaymentForm()
+        payment_form = PaymentForm(initial={'customer': customer})
     context = {'payments': payments, 'payment_form': payment_form}
     return render(request, 'payments_list.html', context)
 

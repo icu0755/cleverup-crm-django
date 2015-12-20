@@ -11,10 +11,15 @@
             <table class="table">
                 <tr>
                     <th>{% trans 'Member' %}</th>
+                    <th class="list-actions"></th>
                 </tr>
                 {% for customer in customers %}
                     <tr>
                         <td>{{ customer.firstname }} {{ customer.lastname }}</td>
+                        <td class="list-actions">
+                            <a href="{% url 'frontend:payments-list' %}?customer_id={{ customer.id }}"
+                               class="btn btn-default">{% trans 'add payment' %}</a>
+                        </td>
                     </tr>
                 {% endfor %}
             </table>
