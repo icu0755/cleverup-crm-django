@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans 'Payments' %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>{% trans 'Payments' %}</h1>
+        <div>
+            {% load bootstrap3 %}
+            <form action="{% url 'frontend:payments-list' %}" method="post" class="form-inline" novalidate>
+                {% csrf_token %}
+                {% bootstrap_form payment_form layout='inline' %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary">
+                        {% trans 'Add' %}
+                    </button>
+                {% endbuttons %}
+            </form>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-md-6">
+                {% if payments %}
+                    <table class="table table-with-actions">
+                        {% for payment in payments %}
+                            <tr>
+                                <td>{{ payment.customer }}</td>
+                                <td>{{ payment.amount }}</td>
+                                <td>{{ payment.paid_at }}</td>
+                                <td class="list-actions">
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <p>{% trans 'No payments found' %}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

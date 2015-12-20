@@ -13,8 +13,8 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from frontend.forms import LoginForm, RegForm, CustomerGroupForm, CustomerForm, GroupAttendanceSelectForm, \
-    GroupAttendanceForm, UserCreateForm, UserEditForm
-from frontend.models import CustomerGroup, Customer, GroupAttendance
+    GroupAttendanceForm, UserCreateForm, UserEditForm, PaymentForm
+from frontend.models import CustomerGroup, Customer, GroupAttendance, Payment
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -381,3 +381,17 @@ def users_remove(request, user_id):
         messages.error(request, _('User %s does not exists') % user_id)
     messages.success(request, _('User %s removed') % user_id)
     return redirect('frontend:users-list')
+
+
+@login_required(login_url=settings.LOGIN_URL)
+def payments_list(request):
+    payments = Payment.objects.all()
+    if request.method == 'POST':
+        payment_form = PaymentForm(request.POST)
+        if payment_form.is_valid():
+            payment_form.save()
+            return redirect('frontend:payments-list')
+    else:
+        payment_form = PaymentForm()
+    context = {'payments': payments, 'payment_form': payment_form}
+    return render(request, 'payments_list.html', context)

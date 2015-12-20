@@ -26,5 +26,6 @@ urlpatterns = [
                   url(r'^users/?$', views.users_list, name='users-list'),
                   url(r'^users/(?P<user_id>\d+)/edit$', views.users_edit, name='users-edit'),
                   url(r'^users/(?P<user_id>\d+)/remove$', views.users_remove, name='users-remove'),
+                  url(r'^payments$', views.payments_list, name='payments-list'),
                   # url(r'^registration$', views.registration, name='registration'),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

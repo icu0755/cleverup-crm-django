@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 
 
@@ -26,8 +27,20 @@ class Customer(models.Model):
     group = models.ForeignKey(CustomerGroup, related_name='customers')
     is_active = models.BooleanField(_('active'), default=True)
 
+    def __unicode__(self):
+        return '%s %s' % (self.firstname, self.lastname)
+
 
 class GroupAttendance(models.Model):
     group = models.ForeignKey(CustomerGroup, related_name='attendance')
     customer = models.ForeignKey(Customer)
     attendance_time = models.DateField()
+
+
+class Payment(models.Model):
+    customer = models.ForeignKey('Customer', related_name='payments')
+    amount = models.IntegerField()
+    paid_at = models.DateField(default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+

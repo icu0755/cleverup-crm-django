@@ -147,3 +147,7 @@ class UserEditForm(forms.Form):
             self.fields['email'].validators.append(validate_user_not_exists)
 
 
+class PaymentForm(forms.ModelForm):
+    class Meta:
+        model = models.Payment
+        fields = ['customer', 'amount', 'paid_at']
