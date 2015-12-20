@@ -7,8 +7,23 @@
 
 {% block content %}
     <div class="container">
-        <h1>{% trans 'Groups' %}</h1>
+        <h3>{% trans 'Create new group' %}</h3>
+        <div class="row">
+            <div class="col-xs-12 col-md-6">
+                {% load bootstrap3 %}
+                <form action="{% url 'frontend:groups-list' %}" method="post" class="form-inline" novalidate>
+                    {% csrf_token %}
+                    {% bootstrap_form form layout='inline' %}
+                    {% buttons %}
+                        <button type="submit" class="btn btn-primary">
+                            {% trans 'Add' %}
+                        </button>
+                    {% endbuttons %}
+                </form>
+            </div>
+        </div>
 
+        <h3>{% trans 'Groups' %}</h3>
         <div class="row">
             <div class="col-xs-12 col-md-6">
                 {% if groups %}
@@ -48,23 +63,6 @@
                 {% else %}
                     <p>{% trans 'No groups found' %}</p>
                 {% endif %}
-            </div>
-        </div>
-
-        <h2>{% trans 'Create new group' %}</h2>
-
-        <div class="row">
-            <div class="col-xs-12 col-md-6">
-                {% load bootstrap3 %}
-                <form action="{% url 'frontend:groups-list' %}" method="post" class="form" novalidate>
-                    {% csrf_token %}
-                    {% bootstrap_form form %}
-                    {% buttons %}
-                        <button type="submit" class="btn btn-primary">
-                            {% trans 'Add' %}
-                        </button>
-                    {% endbuttons %}
-                </form>
             </div>
         </div>
     </div>

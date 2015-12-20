@@ -82,7 +82,11 @@ class CustomerForm(forms.ModelForm):
 
     class Meta:
         model = models.Customer
-        fields = ['firstname', 'lastname', 'group']
+        fields = [
+            'group',
+            'firstname',
+            'lastname',
+        ]
 
 
 class GroupAttendanceForm(forms.Form):
