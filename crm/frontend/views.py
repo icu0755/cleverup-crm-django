@@ -7,6 +7,7 @@ from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.shortcuts import render, redirect
@@ -386,7 +387,17 @@ def users_remove(request, user_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 def payments_list(request):
-    payments = Payment.objects.all()
+    payments_list = Payment.objects.all().order_by('-paid_at', '-id')
+    paginator = Paginator(payments_list, settings.ITEMS_PER_PAGE)
+    page = request.GET.get('page')
+    try:
+        payments = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        payments = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        payments = paginator.page(paginator.num_pages)
     if request.method == 'POST':
         payment_form = PaymentForm(request.POST)
         if payment_form.is_valid():

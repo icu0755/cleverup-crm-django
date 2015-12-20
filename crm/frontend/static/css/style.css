@@ -5,3 +5,7 @@
     margin-top: 20px;
     margin-bottom: 10px;
 }
+.column-date,
+.column-number {
+    text-align: right;
+}

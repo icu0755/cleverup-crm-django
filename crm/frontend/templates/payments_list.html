@@ -28,13 +28,16 @@
                         {% for payment in payments %}
                             <tr>
                                 <td>{{ payment.customer }}</td>
-                                <td>{{ payment.amount }}</td>
-                                <td>{{ payment.paid_at }}</td>
+                                <td class="column-number">{{ payment.amount }}</td>
+                                <td class="column-date">{{ payment.paid_at }}</td>
                                 <td class="list-actions">
                                 </td>
                             </tr>
                         {% endfor %}
                     </table>
+                    {% if payments.paginator.num_pages > 1 %}
+                        {% bootstrap_pagination payments %}
+                    {% endif %}
                 {% else %}
                     <p>{% trans 'No payments found' %}</p>
                 {% endif %}
