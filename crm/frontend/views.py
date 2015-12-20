@@ -20,7 +20,8 @@ from frontend.models import CustomerGroup, Customer, GroupAttendance, Payment
 @login_required(login_url=settings.LOGIN_URL)
 def home(request):
     context = {
-        'groups': CustomerGroup.objects.all().order_by('-id')[0:5]
+        'groups': CustomerGroup.objects.all().order_by('-id')[0:5],
+        'payments': Payment.objects.all().order_by('-id')[0:5],
     }
     return render(request, 'home.html', context)
 
