@@ -8,18 +8,19 @@
 {% block content %}
     <div class="container">
         <h1>{% trans 'Payments' %}</h1>
-        <div>
-            {% load bootstrap3 %}
-            <form action="{% url 'frontend:payments-list' %}" method="post" class="form-inline" novalidate>
-                {% csrf_token %}
-                {% bootstrap_form payment_form layout='inline' %}
-                {% buttons %}
-                    <button type="submit" class="btn btn-primary">
-                        {% trans 'Add' %}
-                    </button>
-                {% endbuttons %}
-            </form>
-        </div>
+
+        {% load bootstrap3 %}
+        <form action="{% url 'frontend:payments-list' %}" method="post" class="form-inline form-create" novalidate>
+            {% csrf_token %}
+            {% bootstrap_form payment_form layout='inline' %}
+            {% buttons %}
+                <button type="submit" class="btn btn-primary">
+                    {% trans 'Add' %}
+                </button>
+            {% endbuttons %}
+        </form>
+
+
         <div class="row">
             <div class="col-xs-12 col-md-6">
                 {% if payments %}
